@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Achadinhos — Vitrine Shopee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFBF5;
+    --surface:#FFFFFF;
+    --orange:#EE4D2D;
+    --orange-dark:#D8431F;
+    --teal:#0E6B5C;
+    --yellow:#FFC93C;
+    --ink:#1F1B2D;
+    --muted:#8A8694;
+    --border:#F0E6DC;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    font-family:'Plus Jakarta Sans', sans-serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+  }
+  #app{
+    width:100%;
+    max-width:480px;
+    min-height:100vh;
+    background:var(--bg);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:30;
+    background:var(--orange);
+    background-image:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 14px);
+    padding:18px 18px 14px;
+    border-radius:0 0 22px 22px;
+    box-shadow:0 6px 18px rgba(238,77,45,0.25);
+  }
+  .header-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .logo{
+    font-family:'Lilita One', cursive;
+    font-size:26px;
+    color:#fff;
+    letter-spacing:0.5px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .logo span{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    background:var(--yellow);
+    color:var(--ink);
+    padding:2px 6px;
+    border-radius:6px;
+    font-weight:700;
+    transform:rotate(-3deg);
+  }
+  .cart-btn{
+    position:relative;
+    background:#fff;
+    border:none;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 3px 8px rgba(0,0,0,0.15);
+    transition:transform 0.15s ease;
+  }
+  .cart-btn:active{transform:scale(0.92);}
+  .cart-btn svg{width:20px;height:20px;color:var(--orange);}
+  .cart-badge{
+    position:absolute;
+    top:-6px;
+    right:-6px;
+    background:var(--teal);
+    color:#fff;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    font-weight:700;
+    min-width:18px;
+    height:18px;
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 4px;
+    border:2px solid var(--orange);
+  }
+  .search-box{
+    display:flex;
+    align-items:center;
+    background:#fff;
+    border-radius:14px;
+    padding:10px 14px;
+    gap:8px;
+  }
+  .search-box svg{width:18px;height:18px;color:var(--muted);flex-shrink:0;}
+  .search-box input{
+    border:none;
+    outline:none;
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-size:15px;
+    width:100%;
+    background:transparent;
+    color:var(--ink);
+  }
+  .search-box input::placeholder{color:var(--muted);}
+
+  /* ---------- CATEGORY CHIPS ---------- */
+  .chips{
+    display:flex;
+    gap:8px;
+    padding:14px 18px 6px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{
+    flex-shrink:0;
+    font-family:'Lilita One', cursive;
+    font-size:13px;
+    letter-spacing:0.3px;
+    color:var(--ink);
+    background:var(--surface);
+    border:1.5px solid var(--border);
+    padding:7px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:all 0.15s ease;
+    white-space:nowrap;
+  }
+  .chip.active{
+    background:var(--teal);
+    border-color:var(--teal);
+    color:#fff;
+  }
+  .chip:active{transform:scale(0.95);}
+
+  /* ---------- PRODUCT GRID ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    padding:16px 18px 100px;
+  }
+  .empty-state{
+    grid-column:1/-1;
+    text-align:center;
+    padding:60px 20px;
+    color:var(--muted);
+  }
+  .empty-state .big{
+    font-family:'Lilita One', cursive;
+    font-size:20px;
+    color:var(--ink);
+    margin-bottom:6px;
+    display:block;
+  }
+  .card{
+    background:var(--surface);
+    border-radius:var(--radius);
+    overflow:hidden;
+    border:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    opacity:0;
+    transform:translateY(10px);
+    animation:riseIn 0.45s ease forwards;
+  }
+  @keyframes riseIn{to{opacity:1;transform:translateY(0);}}
+  .card-img-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio:1/1;
+    background:#F4EFE7;
+    overflow:hidden;
+  }
+  .card-img-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .tag{
+    position:absolute;
+    top:10px;
+    left:-6px;
+    background:var(--yellow);
+    color:var(--ink);
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:11px;
+    padding:4px 10px 4px 12px;
+    border-radius:0 5px 5px 0;
+    transform:rotate(-4deg);
+    box-shadow:0 2px 4px rgba(0,0,0,0.15);
+  }
+  .tag::before{
+    content:'';
+    position:absolute;
+    left:0;
+    top:50%;
+    transform:translate(-2px,-50%);
+    width:6px;
+    height:6px;
+    background:var(--bg);
+    border-radius:50%;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,0.1);
+  }
+  .card-body{
+    padding:12px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    flex:1;
+  }
+  .card-name{
+    font-size:13.5px;
+    font-weight:600;
+    line-height:1.3;
+    color:var(--ink);
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    min-height:34px;
+  }
+  .price-row{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  .price-old{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--muted);
+    text-decoration:line-through;
+  }
+  .price-now{
+    font-family:'JetBrains Mono', monospace;
+    font-size:18px;
+    font-weight:700;
+    color:var(--orange-dark);
+  }
+  .card-actions{
+    display:flex;
+    gap:6px;
+    margin-top:auto;
+  }
+  .btn-add{
+    flex-shrink:0;
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    border:1.5px solid var(--teal);
+    background:#fff;
+    color:var(--teal);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:transform 0.12s ease;
+  }
+  .btn-add:active{transform:scale(0.9);}
+  .btn-add svg{width:16px;height:16px;}
+  .btn-buy{
+    flex:1;
+    border:none;
+    background:var(--orange);
+    color:#fff;
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    border-radius:10px;
+    padding:0 8px;
+    cursor:pointer;
+    transition:transform 0.12s ease, background 0.12s ease;
+  }
+  .btn-buy:hover{background:var(--orange-dark);}
+  .btn-buy:active{transform:scale(0.95);}
+
+  /* ---------- CART DRAWER ---------- */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(31,27,45,0.45);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease;
+    z-index:40;
+  }
+  .overlay.show{opacity:1;pointer-events:auto;}
+  .drawer{
+    position:fixed;
+    left:50%;
+    bottom:0;
+    transform:translate(-50%, 100%);
+    width:100%;
+    max-width:480px;
+    max-height:78vh;
+    background:var(--surface);
+    border-radius:24px 24px 0 0;
+    z-index:50;
+    transition:transform 0.32s cubic-bezier(.32,.72,0,1);
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 -10px 30px rgba(0,0,0,0.2);
+  }
+  .drawer.show{transform:translate(-50%, 0);}
+  .drawer-handle{
+    width:40px;
+    height:4px;
+    background:var(--border);
+    border-radius:2px;
+    margin:10px auto 4px;
+  }
+  .drawer-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 20px 12px;
+    border-bottom:1px solid var(--border);
+  }
+  .drawer-head h2{
+    font-family:'Lilita One', cursive;
+    font-size:19px;
+    margin:0;
+  }
+  .drawer-close{
+    background:var(--bg);
+    border:none;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--muted);
+  }
+  .drawer-note{
+    font-size:12px;
+    color:var(--muted);
+    padding:10px 20px;
+    background:#FFF6EC;
+    border-bottom:1px solid var(--border);
+    line-height:1.5;
+  }
+  .drawer-list{
+    overflow-y:auto;
+    padding:8px 20px;
+    flex:1;
+  }
+  .cart-item{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .cart-item img{
+    width:54px;
+    height:54px;
+    border-radius:10px;
+    object-fit:cover;
+    background:#F4EFE7;
+    flex-shrink:0;
+  }
+  .cart-item-info{flex:1;min-width:0;}
+  .cart-item-name{
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:2px;
+    display:-webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .cart-item-meta{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .qty-stepper{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--bg);
+    border-radius:8px;
+    padding:2px 4px;
+  }
+  .qty-stepper button{
+    width:20px;height:20px;
+    border:none;background:transparent;
+    color:var(--ink);font-weight:700;cursor:pointer;font-size:13px;
+  }
+  .cart-item-right{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:6px;
+  }
+  .cart-item-price{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:13px;
+    color:var(--orange-dark);
+  }
+  .mini-buy{
+    font-size:11px;
+    font-weight:700;
+    color:var(--teal);
+    background:none;
+    border:1px solid var(--teal);
+    border-radius:8px;
+    padding:4px 8px;
+    cursor:pointer;
+  }
+  .drawer-empty{
+    text-align:center;
+    padding:50px 20px;
+    color:var(--muted);
+  }
+  .drawer-empty span{
+    font-family:'Lilita One', cursive;
+    color:var(--ink);
+    display:block;
+    margin-bottom:6px;
+    font-size:17px;
+  }
+  .drawer-foot{
+    padding:14px 20px 22px;
+    border-top:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .drawer-total{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    font-weight:600;
+  }
+  .drawer-total b{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--orange-dark);
+    font-size:17px;
+  }
+  .clear-link{
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+    text-decoration:underline;
+    cursor:pointer;
+    background:none;
+    border:none;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{animation:none;opacity:1;transform:none;}
+    .drawer{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <div class="header-top">
+      <div class="logo">achadinhos <span>SHOPEE</span></div>
+      <button class="cart-btn" id="cartBtn" aria-label="Abrir carrinho">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.3 4.6A1 1 0 0 0 5.6 19H17M9 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM18 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>
+        <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+      </button>
+    </div>
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="searchInput" type="text" placeholder="Buscar achadinhos...">
+    </div>
+  </header>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-head">
+    <h2>Meu carrinho</h2>
+    <button class="drawer-close" id="closeDrawer" aria-label="Fechar">✕</button>
+  </div>
+  <div class="drawer-note">
+    Cada produto é de um anúncio diferente na Shopee, então o pagamento é feito separado: toque em <b>"Ir para Shopee"</b> em cada item para concluir a compra dele.
+  </div>
+  <div class="drawer-list" id="drawerList"></div>
+  <div class="drawer-foot" id="drawerFoot" style="display:none">
+    <div class="drawer-total"><span>Total estimado</span><b id="cartTotal">R$ 0,00</b></div>
+    <button class="clear-link" id="clearCart">Esvaziar carrinho</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   COMO ADICIONAR SEUS PRODUTOS
+   =========================================================================
+   Edite a lista PRODUTOS abaixo. Apague os itens de exemplo e adicione
+   os seus, seguindo este formato para cada produto:
+
+   {
+     id: 1,                          // um número único para cada produto
+     nome: "Nome do produto",
+     precoAtual: 49.90,              // preço com desconto (o que cobra)
+     precoAntigo: 69.90,             // preço "de". Sem desconto? use null
+     categoria: "Eletrônicos",       // categorias criam os filtros automaticamente
+     imagem: "https://link-da-imagem-do-produto.jpg",
+     linkShopee: "https://shopee.com.br/seu-link-de-afiliado-aqui"
+   }
+
+   Dica: a imagem pode ser o link da foto do próprio anúncio na Shopee
+   (clique com o botão direito na foto > copiar endereço da imagem).
+   ========================================================================= */
+
+let PRODUTOS = [
+  {
+    id: 1,
+    nome: "Fone de Ouvido Bluetooth TWS Sem Fio",
+    precoAtual: 39.90,
+    precoAntigo: 79.90,
+    categoria: "Eletrônicos",
+    imagem: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=400&q=80",
+    linkShopee: "https://shopee.com.br/"
+  },
+  {
+    id: 2,
+    nome: "Organizador de Geladeira Kit 5 Peças",
+    precoAtual: 29.90,
+    precoAntigo: null,
+    categoria: "Casa",
+    imagem: "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=400&q=80",
+    linkShopee: "https://shopee.com.br/"
+  },
+  {
+    id: 3,
+    nome: "Luminária LED de Mesa com Carregador USB",
+    precoAtual: 54.90,
+    precoAntigo: 89.90,
+    categoria: "Casa",
+    imagem: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&q=80",
+    linkShopee: "https://shopee.com.br/"
+  },
+  {
+    id: 4,
+    nome: "Mini Câmera de Segurança Wi-Fi 360°",
+    precoAtual: 89.90,
+    precoAntigo: 149.90,
+    categoria: "Eletrônicos",
+    imagem: "https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?w=400&q=80",
+    linkShopee: "https://shopee.com.br/"
+  },
+  {
+    id: 5,
+    nome: "Necessaire Porta Cosméticos Impermeável",
+    precoAtual: 19.90,
+    precoAntigo: null,
+    categoria: "Beleza",
+    imagem: "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=400&q=80",
+    linkShopee: "https://shopee.com.br/"
+  },
+  {
+    id: 6,
+    nome: "Garrafa Térmica Inox 1 Litro",
+    precoAtual: 34.90,
+    precoAntigo: 49.90,
+    categoria: "Casa",
+    imagem: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&q=80",
+    linkShopee: "https://shopee.com.br/"
+  }
+];
+
+/* ====================== A PARTIR DE AQUI É SÓ O FUNCIONAMENTO ====================== */
+
+let categoriaAtiva = "Todos";
+let busca = "";
+let carrinho = {}; // { id: quantidade }
+
+function formatarPreco(valor){
+  return "R$ " + valor.toFixed(2).replace(".", ",");
+}
+
+function getCategorias(){
+  const unicas = [...new Set(PRODUTOS.map(p => p.categoria))];
+  return ["Todos", ...unicas];
+}
+
+function renderChips(){
+  const chipsEl = document.getElementById("chips");
+  chipsEl.innerHTML = "";
+  getCategorias().forEach(cat => {
+    const chip = document.createElement("div");
+    chip.className = "chip" + (cat === categoriaAtiva ? " active" : "");
+    chip.textContent = cat;
+    chip.onclick = () => { categoriaAtiva = cat; renderAll(); };
+    chipsEl.appendChild(chip);
+  });
+}
+
+function produtosFiltrados(){
+  return PRODUTOS.filter(p => {
+    const matchCat = categoriaAtiva === "Todos" || p.categoria === categoriaAtiva;
+    const matchBusca = p.nome.toLowerCase().includes(busca.toLowerCase());
+    return matchCat && matchBusca;
+  });
+}
+
+function renderGrid(){
+  const grid = document.getElementById("grid");
+  const lista = produtosFiltrados();
+  grid.innerHTML = "";
+
+  if(lista.length === 0){
+    grid.innerHTML = `<div class="empty-state"><span class="big">Nada por aqui ainda</span>Tente outra busca ou categoria.</div>`;
+    return;
+  }
+
+  lista.forEach((p, i) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.style.animationDelay = (i * 0.04) + "s";
+
+    const desconto = p.precoAntigo ? Math.round(100 - (p.precoAtual / p.precoAntigo) * 100) : null;
+
+    card.innerHTML = `
+      <div class="card-img-wrap">
+        <img src="${p.imagem}" alt="${p.nome}" loading="lazy">
+        ${desconto ? `<div class="tag">-${desconto}%</div>` : ""}
+      </div>
+      <div class="card-body">
+        <div class="card-name">${p.nome}</div>
+        <div class="price-row">
+          ${p.precoAntigo ? `<span class="price-old">${formatarPreco(p.precoAntigo)}</span>` : ""}
+          <span class="price-now">${formatarPreco(p.precoAtual)}</span>
+        </div>
+        <div class="card-actions">
+          <button class="btn-add" aria-label="Adicionar ao carrinho" data-add="${p.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <button class="btn-buy" data-buy="${p.id}">Comprar na Shopee</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  grid.querySelectorAll("[data-add]").forEach(btn => {
+    btn.onclick = () => adicionarAoCarrinho(Number(btn.dataset.add));
+  });
+  grid.querySelectorAll("[data-buy]").forEach(btn => {
+    btn.onclick = () => irParaShopee(Number(btn.dataset.buy));
+  });
+}
+
+function adicionarAoCarrinho(id){
+  carrinho[id] = (carrinho[id] || 0) + 1;
+  renderCartBadge();
+  renderDrawer();
+}
+
+function irParaShopee(id){
+  const produto = PRODUTOS.find(p => p.id === id);
+  if(produto) window.open(produto.linkShopee, "_blank");
+}
+
+function renderCartBadge(){
+  const total = Object.values(carrinho).reduce((a,b) => a+b, 0);
+  const badge = document.getElementById("cartBadge");
+  if(total > 0){
+    badge.style.display = "flex";
+    badge.textContent = total;
+  } else {
+    badge.style.display = "none";
+  }
+}
+
+function renderDrawer(){
+  const list = document.getElementById("drawerList");
+  const foot = document.getElementById("drawerFoot");
+  const ids = Object.keys(carrinho).filter(id => carrinho[id] > 0);
+
+  if(ids.length === 0){
+    list.innerHTML = `<div class="drawer-empty"><span>Seu carrinho está vazio</span>Adicione achadinhos para organizá-los aqui.</div>`;
+    foot.style.display = "none";
+    return;
+  }
+
+  foot.style.display = "flex";
+  list.innerHTML = "";
+  let total = 0;
+
+  ids.forEach(idStr => {
+    const id = Number(idStr);
+    const qtd = carrinho[id];
+    const produto = PRODUTOS.find(p => p.id === id);
+    if(!produto) return;
+    total += produto.precoAtual * qtd;
+
+    const item = document.createElement("div");
+    item.className = "cart-item";
+    item.innerHTML = `
+      <img src="${produto.imagem}" alt="">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${produto.nome}</div>
+        <div class="qty-stepper">
+          <button data-dec="${id}">−</button>
+          <span>${qtd}</span>
+          <button data-inc="${id}">+</button>
+        </div>
+      </div>
+      <div class="cart-item-right">
+        <span class="cart-item-price">${formatarPreco(produto.precoAtual * qtd)}</span>
+        <button class="mini-buy" data-go="${id}">Ir para Shopee</button>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+
+  document.getElementById("cartTotal").textContent = formatarPreco(total);
+
+  list.querySelectorAll("[data-inc]").forEach(b => b.onclick = () => { carrinho[b.dataset.inc]++; renderCartBadge(); renderDrawer(); });
+  list.querySelectorAll("[data-dec]").forEach(b => b.onclick = () => {
+    const id = b.dataset.dec;
+    carrinho[id]--;
+    if(carrinho[id] <= 0) delete carrinho[id];
+    renderCartBadge(); renderDrawer();
+  });
+  list.querySelectorAll("[data-go]").forEach(b => b.onclick = () => irParaShopee(Number(b.dataset.go)));
+}
+
+function abrirDrawer(){
+  document.getElementById("overlay").classList.add("show");
+  document.getElementById("drawer").classList.add("show");
+}
+function fecharDrawer(){
+  document.getElementById("overlay").classList.remove("show");
+  document.getElementById("drawer").classList.remove("show");
+}
+
+function renderAll(){
+  renderChips();
+  renderGrid();
+}
+
+document.getElementById("cartBtn").onclick = abrirDrawer;
+document.getElementById("closeDrawer").onclick = fecharDrawer;
+document.getElementById("overlay").onclick = fecharDrawer;
+document.getElementById("clearCart").onclick = () => { carrinho = {}; renderCartBadge(); renderDrawer(); };
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  busca = e.target.value;
+  renderGrid();
+});
+
+/* Se este arquivo estiver hospedado junto de um "produtos.json" (ex: no GitHub Pages),
+   ele substitui os produtos de exemplo automaticamente. Se não encontrar, usa os de cima. */
+async function carregarProdutosExternos(){
+  try{
+    const resp = await fetch('produtos.json', { cache: 'no-store' });
+    if(resp.ok){
+      const dados = await resp.json();
+      if(Array.isArray(dados) && dados.length){
+        PRODUTOS = dados;
+      }
+    }
+  }catch(e){ /* sem produtos.json por perto, segue com os exemplos */ }
+}
+
+(async function start(){
+  await carregarProdutosExternos();
+  renderAll();
+  renderDrawer();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "nome": "Fone de Ouvido Bluetooth TWS Sem Fio",
+    "precoAtual": 39.90,
+    "precoAntigo": 79.90,
+    "categoria": "Eletrônicos",
+    "imagem": "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=800&q=80",
+    "linkShopee": "https://shopee.com.br/"
+  },
+  {
+    "id": 2,
+    "nome": "Organizador de Geladeira Kit 5 Peças",
+    "precoAtual": 29.90,
+    "precoAntigo": null,
+    "categoria": "Casa",
+    "imagem": "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=800&q=80",
+    "linkShopee": "https://shopee.com.br/"
+  },
+  {
+    "id": 3,
+    "nome": "Luminária LED de Mesa com Carregador USB",
+    "precoAtual": 54.90,
+    "precoAntigo": 89.90,
+    "categoria": "Casa",
+    "imagem": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&q=80",
+    "linkShopee": "https://shopee.com.br/"
+  },
+  {
+    "id": 4,
+    "nome": "Mini Câmera de Segurança Wi-Fi 360°",
+    "precoAtual": 89.90,
+    "precoAntigo": 149.90,
+    "categoria": "Eletrônicos",
+    "imagem": "https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?w=800&q=80",
+    "linkShopee": "https://shopee.com.br/"
+  },
+  {
+    "id": 5,
+    "nome": "Necessaire Porta Cosméticos Impermeável",
+    "precoAtual": 19.90,
+    "precoAntigo": null,
+    "categoria": "Beleza",
+    "imagem": "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=800&q=80",
+    "linkShopee": "https://shopee.com.br/"
+  },
+  {
+    "id": 6,
+    "nome": "Garrafa Térmica Inox 1 Litro",
+    "precoAtual": 34.90,
+    "precoAntigo": 49.90,
+    "categoria": "Casa",
+    "imagem": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800&q=80",
+    "linkShopee": "https://shopee.com.br/"
+  }
+]
